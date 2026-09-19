@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { FormEvent, useRef, useState } from "react";
 
 const services = [
   {
@@ -61,6 +64,16 @@ const faqs = [
 ];
 
 export default function Home() {
+  const contactSectionRef = useRef<HTMLElement>(null);
+  const [heroEmail, setHeroEmail] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+
+  function handleHeroSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setContactEmail(heroEmail);
+    contactSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   return (
     <main>
       <section className="top-banner">
@@ -90,8 +103,16 @@ export default function Home() {
             <p className="hero-lede">
               Karama Labs helps communities, businesses, and emerging technical teams create credible websites, practical software systems, and real cloud capability.
             </p>
-            <form className="hero-form" action="mailto:contact@karamalabs.com" method="post" encType="text/plain">
-              <input name="email" type="email" placeholder="your@email.com" aria-label="Email address" required />
+            <form className="hero-form" onSubmit={handleHeroSubmit}>
+              <input
+                name="email"
+                type="email"
+                placeholder="your@email.com"
+                aria-label="Email address"
+                value={heroEmail}
+                onChange={(event) => setHeroEmail(event.target.value)}
+                required
+              />
               <button type="submit">Start with Karama Labs</button>
             </form>
           </div>
@@ -246,7 +267,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="contact-section" id="contact">
+      <section className="contact-section" id="contact" ref={contactSectionRef}>
         <div className="contact-stage" aria-hidden="true">
           <div className="silhouette">*</div>
           <div className="footer-card">
@@ -272,7 +293,14 @@ export default function Home() {
           </label>
           <label>
             Email
-            <input name="email" type="email" autoComplete="email" required />
+            <input
+              name="email"
+              type="email"
+              autoComplete="email"
+              value={contactEmail}
+              onChange={(event) => setContactEmail(event.target.value)}
+              required
+            />
           </label>
           <label>
             What do you need?
