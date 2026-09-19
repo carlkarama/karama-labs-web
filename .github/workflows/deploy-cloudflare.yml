@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Pages
+name: Deploy to Cloudflare Workers
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
     deployments: write
 
 concurrency:
-  group: cloudflare-pages-production
+  group: cloudflare-workers-production
   cancel-in-progress: true
 
 jobs:
@@ -35,11 +35,11 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy to Cloudflare Workers
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy out --project-name=karama-labs-web --branch=main
+          command: deploy
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
